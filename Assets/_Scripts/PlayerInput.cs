@@ -4,15 +4,26 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [HideInInspector] public float horizontalInput;
+    [HideInInspector] public float verticalInput;
+
+    public bool attackInput;
+
+    private void Update()
     {
-        
+        horizontalInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
+
+        if(!attackInput && Time.timeScale != 0)
+        {
+            attackInput = Input.GetMouseButtonDown(0);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        
+        horizontalInput = 0;
+        verticalInput = 0;
+        attackInput = false;
     }
 }
