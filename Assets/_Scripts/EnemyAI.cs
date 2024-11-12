@@ -17,9 +17,12 @@ public class EnemyAI : MonoBehaviour
 
     public Animator animator;
 
+    public float curHp;
+    private float maxHp = 100f;
+
     // state machine
     public enum EnemyState
-    { Normal, Attack }
+    { Normal, Attack, Die }
 
     public EnemyState curState; // trạng thái hiện tại
 
@@ -27,6 +30,7 @@ public class EnemyAI : MonoBehaviour
     private void Start()
     {
         originalPos = transform.position;
+        curHp = maxHp;
     }
 
     private void Update()
@@ -65,6 +69,8 @@ public class EnemyAI : MonoBehaviour
             // Bình thường
             ChangeState(EnemyState.Normal);
         }
+
+        OnDead();
     }
 
     private void ChangeState(EnemyState newState)
@@ -76,6 +82,8 @@ public class EnemyAI : MonoBehaviour
                 break;
             case EnemyState.Attack:
                 break;
+            case EnemyState.Die:
+                break;
         }
 
         // B2: enter newState
@@ -86,9 +94,34 @@ public class EnemyAI : MonoBehaviour
             case EnemyState.Attack:
                 animator.SetTrigger("Attack");
                 break;
+            case EnemyState.Die:
+                animator.SetTrigger("Die");
+                break;
         }
 
         // B3: Update state
         curState = newState;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag == "Sword")
+        {
+            curHp -= 30f;
+        }
+    }
+
+    public void OnDead()
+    {
+        if(curHp <= 0)
+        {
+            curHp = 0;
+            ChangeState(EnemyState.Die);
+        }
+    }
+
+    public void Destroy()
+    {
+        Destroy(gameObject, 1f);
     }
 }
