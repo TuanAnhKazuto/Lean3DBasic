@@ -7,8 +7,7 @@ public class PlayerInput : MonoBehaviour
     [HideInInspector] public float horizontalInput;
     [HideInInspector] public float verticalInput;
 
-    public bool attackInput;
-
+    [HideInInspector] public bool attackInput;
     private void Update()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");

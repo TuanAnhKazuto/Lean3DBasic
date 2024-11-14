@@ -20,6 +20,8 @@ public class EnemyAI : MonoBehaviour
     public float curHp;
     private float maxHp = 100f;
 
+    public GameObject atkCollider;
+
     // state machine
     public enum EnemyState
     { Normal, Attack, Die }
@@ -31,6 +33,7 @@ public class EnemyAI : MonoBehaviour
     {
         originalPos = transform.position;
         curHp = maxHp;
+        atkCollider.SetActive(false);
     }
 
     private void Update()
@@ -47,7 +50,7 @@ public class EnemyAI : MonoBehaviour
             animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
 
             distance = Vector3.Distance(target.position, transform.position);
-            if(distance < 2f)
+            if(distance <= 2f)
             {
                 // Tấn công
                 ChangeState(EnemyState.Attack);
@@ -71,6 +74,16 @@ public class EnemyAI : MonoBehaviour
         }
 
         OnDead();
+    }
+
+    public void StartAttack()
+    {
+        atkCollider.SetActive(true);
+    }
+
+    public void EndAttack()
+    {
+        atkCollider.SetActive(false);
     }
 
     private void ChangeState(EnemyState newState)
