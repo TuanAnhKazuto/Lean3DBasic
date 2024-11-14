@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static EnemyAI;
 
 public class Character : MonoBehaviour
 {
@@ -10,11 +11,26 @@ public class Character : MonoBehaviour
     public PlayerInput playerInput;
     public Animator animator;
 
+    public GameObject swordCollider;
+
+    // Hp
+    public float curHp;
+    private float maxHp = 100f;
+
+    //weapon
+    public GameObject sword01;
+    public GameObject sword02;  
+
     // state machine
-    public enum CharacterState
-    {Normal, Attack}
+    [HideInInspector] public enum CharacterState
+    {Normal, Attack, Die}
 
     public CharacterState curState; // trạng thái hiện tại
+
+    private void Start()
+    {
+        curHp = maxHp;
+    }
 
     void FixedUpdate()
     {
@@ -28,6 +44,8 @@ public class Character : MonoBehaviour
         }
         
         characterController.Move(movementVelocty);
+
+        OnDead();
     }
 
     void CaculateMovement()
@@ -35,6 +53,7 @@ public class Character : MonoBehaviour
         if (playerInput.attackInput)
         {
             ChangeState(CharacterState.Attack);
+            swordCollider.SetActive(true);
             return;
         }
 
@@ -62,6 +81,8 @@ public class Character : MonoBehaviour
                 break;
             case CharacterState.Attack:
                 break;
+            case CharacterState.Die:
+                break;
         }
 
         // B2: enter newState
@@ -72,14 +93,50 @@ public class Character : MonoBehaviour
             case CharacterState.Attack:
                 animator.SetTrigger("Attack");
                 break;
+            case CharacterState.Die:
+                
+                // Weapon drop
+                sword01.transform.SetParent(null);
+                sword02.transform.SetParent(null);
+
+                // Weapon fell
+
+                sword01.GetComponent<Rigidbody>().isKinematic = false;
+                sword02.GetComponent<Rigidbody>().isKinematic = false;
+
+                animator.SetBool("Die",true);
+                break;
         }
 
         // B3: Update state
         curState = newState;
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "EnemyAtk")
+        {
+            curHp -= 10f;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        
+    }
+
+    public void OnDead()
+    {
+        if (curHp <= 0)
+        {
+            curHp = 0;
+            ChangeState(CharacterState.Die);
+        }
+    }
+
     public void OnAttack01End()
     {
         ChangeState(CharacterState.Normal);
+        swordCollider.SetActive(false);
     }
 }
