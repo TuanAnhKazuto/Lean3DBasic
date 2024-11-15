@@ -5,6 +5,7 @@ using static EnemyAI;
 
 public class Character : MonoBehaviour
 {
+    public MyPlayerMovement playerMovement;
     public CharacterController characterController; 
     public float speed = 2f;
     public Vector3 movementVelocty;
@@ -15,7 +16,7 @@ public class Character : MonoBehaviour
 
     // Hp
     public float curHp;
-    private float maxHp = 100f;
+    public float maxHp = 100f;
     public bool onDead = false;
 
     //weapon
@@ -39,13 +40,15 @@ public class Character : MonoBehaviour
         switch (curState)
         {
             case CharacterState.Normal:
+                playerMovement.CaculateMovement();
                 CaculateMovement();
+                
                 break;
             case CharacterState.Attack:
                 break;
         }
         
-        characterController.Move(movementVelocty);
+        //characterController.Move(movementVelocty);
 
         OnDead();
     }
@@ -59,15 +62,15 @@ public class Character : MonoBehaviour
             return;
         }
 
-        movementVelocty.Set(playerInput.horizontalInput, 0, playerInput.verticalInput);
-        movementVelocty.Normalize();
-        movementVelocty = Quaternion.Euler(0, -45, 0) * movementVelocty;
-        movementVelocty *= speed * Time.deltaTime;
-        animator.SetFloat("Speed", movementVelocty.magnitude);
-        if (movementVelocty != Vector3.zero )
-        {
-            transform.rotation = Quaternion.LookRotation(movementVelocty);
-        }
+        //movementVelocty.Set(playerInput.horizontalInput, 0, playerInput.verticalInput);
+        //movementVelocty.Normalize();
+        //movementVelocty = Quaternion.Euler(0, -45, 0) * movementVelocty;
+        //movementVelocty *= speed * Time.deltaTime;
+        animator.SetFloat("Speed", playerMovement.moveValue);
+        //if (movementVelocty != Vector3.zero)
+        //{
+        //    transform.rotation = Quaternion.LookRotation(movementVelocty);
+        //}
     }
 
     // chuyển đổi trạng thái
