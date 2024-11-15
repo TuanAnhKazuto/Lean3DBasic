@@ -8,6 +8,7 @@ using static UnityEditor.Rendering.InspectorCurveEditor;
 
 public class EnemyAI : MonoBehaviour
 {
+    public Character character;
     public NavMeshAgent navMeshAgent;
     public Transform target;
 
@@ -50,14 +51,14 @@ public class EnemyAI : MonoBehaviour
             animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
 
             distance = Vector3.Distance(target.position, transform.position);
-            if(distance <= 2f)
+            if(distance <= 2f && !character.onDead)
             {
                 // Tấn công
                 ChangeState(EnemyState.Attack);
             }
         }
 
-        if(distance > radius || distanceToOriginal > maxDistace)
+        if(distance > radius || distanceToOriginal > maxDistace || character.onDead)
         {
             // Quay về vị trí ban đầu
             navMeshAgent.SetDestination(originalPos);

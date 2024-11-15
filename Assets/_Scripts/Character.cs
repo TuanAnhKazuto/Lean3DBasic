@@ -16,6 +16,7 @@ public class Character : MonoBehaviour
     // Hp
     public float curHp;
     private float maxHp = 100f;
+    public bool onDead = false;
 
     //weapon
     public GameObject sword01;
@@ -30,6 +31,7 @@ public class Character : MonoBehaviour
     private void Start()
     {
         curHp = maxHp;
+        
     }
 
     void FixedUpdate()
@@ -94,7 +96,8 @@ public class Character : MonoBehaviour
                 animator.SetTrigger("Attack");
                 break;
             case CharacterState.Die:
-                
+                onDead = true;
+                speed = 0;
                 // Weapon drop
                 sword01.transform.SetParent(null);
                 sword02.transform.SetParent(null);
