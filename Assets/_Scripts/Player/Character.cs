@@ -21,8 +21,10 @@ public class Character : MonoBehaviour
     public HealthBar healthBar;
 
     //weapon
-    public GameObject sword01;
-    public GameObject sword02;  
+    public BoxCollider boxSword;
+    public BoxCollider boxShiend;
+    public GameObject sword;
+    public GameObject shiend;  
 
     // state machine
     [HideInInspector] public enum CharacterState
@@ -33,7 +35,8 @@ public class Character : MonoBehaviour
     private void Start()
     {
         curHp = maxHp;
-        
+        boxSword.enabled = false;
+        boxShiend.enabled = false;
     }
 
     void FixedUpdate()
@@ -51,11 +54,15 @@ public class Character : MonoBehaviour
         
         //characterController.Move(movementVelocty);
 
-        OnDead();
+        if(curHp <= 0)
+        {
+            OnDead();
+        }
     }
 
     void CaculateMovement()
     {
+        if(onDead) return;
         if (playerInput.attackInput)
         {
             ChangeState(CharacterState.Attack);
@@ -101,17 +108,18 @@ public class Character : MonoBehaviour
                 break;
             case CharacterState.Die:
                 onDead = true;
+                animator.SetBool("Die", true);
                 speed = 0;
                 // Weapon drop
-                sword01.transform.SetParent(null);
-                sword02.transform.SetParent(null);
+                sword.transform.SetParent(null);
+                shiend.transform.SetParent(null);
+                boxSword.enabled = true;
+                boxShiend.enabled = true;
 
                 // Weapon fell
 
-                sword01.GetComponent<Rigidbody>().isKinematic = false;
-                sword02.GetComponent<Rigidbody>().isKinematic = false;
-
-                animator.SetBool("Die",true);
+                sword.GetComponent<Rigidbody>().isKinematic = false;
+                shiend.GetComponent<Rigidbody>().isKinematic = false;
                 break;
         }
 
@@ -130,11 +138,8 @@ public class Character : MonoBehaviour
 
     public void OnDead()
     {
-        if (curHp <= 0)
-        {
-            curHp = 0;
-            ChangeState(CharacterState.Die);
-        }
+        curHp = 0;
+        ChangeState(CharacterState.Die);
     }
 
     public void OnAttack01End()
