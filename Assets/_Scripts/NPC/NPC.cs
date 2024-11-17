@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,10 +9,15 @@ public class NPC : MonoBehaviour
     public TextMeshProUGUI chatText;
     public GameObject fKey;
     [HideInInspector] public bool isChating;
+    Coroutine coroutine;
+
+    public string[] chat;
 
 
     private void Awake()
     {
+        fKey.SetActive(true);  
+
         fKey.SetActive(false);
         npcChatPanel.SetActive(false);
     }
@@ -28,12 +33,27 @@ public class NPC : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.gameObject.CompareTag("Player") && Input.GetKeyDown(KeyCode.F))
+        if (other.gameObject.CompareTag("Player") && Input.GetKey(KeyCode.F) && !isChating)
         {
-            isChating = true;
+            isChating = true; // Đánh dấu đang trong trạng thái hội thoại
             fKey.SetActive(false);
             npcChatPanel.SetActive(true);
-            chatText.text = "Nhin cai lon.";
+            coroutine = StartCoroutine(ReadChat());
+        }
+    }
+
+
+    IEnumerator ReadChat()
+    {
+        foreach(var line in chat)
+        {
+            chatText.text = "";
+            for (int i = 0; i < line.Length; i++)
+            {
+                chatText.text += line[i];
+                yield return new WaitForSeconds(0.1f);
+            }
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
@@ -44,6 +64,12 @@ public class NPC : MonoBehaviour
             fKey.SetActive(false);
             npcChatPanel.SetActive(false);
             isChating = false;
+            // Kiểm tra nếu coroutine không null trước khi dừng nó
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+                coroutine = null; // Đặt lại giá trị để tránh lỗi lần sau
+            }
         }
     }
 }
