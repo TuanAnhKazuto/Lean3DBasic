@@ -15,9 +15,10 @@ public class Character : MonoBehaviour
     public GameObject swordCollider;
 
     // Hp
-    public float curHp;
-    public float maxHp = 100f;
+    public int curHp;
+    public int maxHp = 100;
     public bool onDead = false;
+    public HealthBar healthBar;
 
     //weapon
     public GameObject sword01;
@@ -122,13 +123,9 @@ public class Character : MonoBehaviour
     {
         if (other.gameObject.tag == "EnemyAtk")
         {
-            curHp -= 10f;
+            curHp -= 10;
+            healthBar.UpdateBar(maxHp, curHp);
         }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        
     }
 
     public void OnDead()

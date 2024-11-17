@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Sword
   - EnemyAtk
+  - NPC
   layers:
   - Default
   - TransparentFX
