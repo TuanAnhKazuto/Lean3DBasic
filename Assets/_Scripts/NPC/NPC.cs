@@ -10,6 +10,7 @@ public class NPC : MonoBehaviour
     public GameObject fKey;
     [HideInInspector] public bool isChating;
     Coroutine coroutine;
+    public Character character;
 
     public string[] chat;
 
@@ -27,6 +28,7 @@ public class NPC : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            if (character.onDead) return;
             fKey.SetActive(true);
         }
     }
@@ -35,6 +37,7 @@ public class NPC : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player") && Input.GetKey(KeyCode.F) && !isChating)
         {
+            if (character.onDead) fKey.SetActive(false); return;
             isChating = true; // Đánh dấu đang trong trạng thái hội thoại
             fKey.SetActive(false);
             npcChatPanel.SetActive(true);

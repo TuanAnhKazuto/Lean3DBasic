@@ -44,7 +44,7 @@ public class MyPlayerMovement : MonoBehaviour
         }
 
         Run();
-        Dash();
+        //Dash();
         Stamina();
     }
 
@@ -82,8 +82,9 @@ public class MyPlayerMovement : MonoBehaviour
         {
             curStamina -= 5f * Time.deltaTime;
             staminaSlider.value = curStamina;
-            speed = 13f;
+            speed = 20f;
             isRuning = true;
+            Debug.Log("chay");
         }
         else
         {
